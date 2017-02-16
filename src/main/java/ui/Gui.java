@@ -29,10 +29,4 @@ public class Gui extends JFrame{
 
         setVisible(true);
     }
-
-
-    private void createUIComponents() {
-        // TODO: place custom component creation code here
-        JPanel drawPan = new DrawPan();
-    }
 }
