@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="ui.Gui">
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="ui.RootFrame">
   <grid id="27dc6" binding="mainPan" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="0">
     <constraints>
       <xy x="6" y="8" width="597" height="599"/>
     </constraints>
     <properties>
-      <preferredSize width="590" height="590"/>
+      <preferredSize width="510" height="590"/>
     </properties>
     <border type="none"/>
     <children>
-      <grid id="b1216" binding="controlPan" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="0">
+      <grid id="b1216" binding="controlPan" layout-manager="FlowLayout" hgap="10" vgap="10" flow-align="0">
         <constraints/>
         <properties>
           <preferredSize width="120" height="590"/>
         </properties>
-        <border type="etched"/>
+        <border type="none"/>
         <children>
           <component id="723c6" class="javax.swing.JButton" binding="startBt">
             <constraints/>
             <properties>
               <horizontalAlignment value="0"/>
               <preferredSize width="105" height="32"/>
-              <text value="Button"/>
+              <text value="Reset"/>
             </properties>
           </component>
         </children>
@@ -29,8 +29,11 @@
       <component id="1ffac" class="ui.DrawPan" binding="drawPan">
         <constraints/>
         <properties>
-          <preferredSize width="465" height="590"/>
+          <preferredSize width="385" height="590"/>
         </properties>
+        <clientProperties>
+          <html.disable class="java.lang.Boolean" value="false"/>
+        </clientProperties>
       </component>
     </children>
   </grid>

@@ -12,29 +12,29 @@ public class Brick implements Comparable<Brick> {
         this.y = y;
     }
 
-    public int getX() {
+    public int getPosX() {
         return x;
     }
 
-    public void setX(int x) {
+    public void setPosX(int x) {
         this.x = x;
     }
 
-    public int getY() {
+    public int getPosY() {
         return y;
     }
 
-    public void setY(int y) {
+    public void setPosY(int y) {
         this.y = y;
     }
 
     public int compareTo(Brick brick) {
-        if (x < brick.getX()) {
+        if (x < brick.getPosX()) {
             return -1;
-        } else if (x > brick.getX()) {
+        } else if (x > brick.getPosX()) {
             return 1;
         } else {
-            if (y < brick.getY()) {
+            if (y < brick.getPosY()) {
                 return -1;
             } else {
                 return 1;
