@@ -168,7 +168,7 @@ public class Figure {
         figure.getBricks().sort(new CompareByY());
         int min = figure.getBricks().get(0).getPosY();
         int max = figure.getBricks().get(figure.getBricks().size() - 1).getPosY();
-        int count = 1;
+        int count = 2;
         Brick right;
         Brick left;
         Iterator<Brick> leftIter = bricks.iterator();
@@ -191,7 +191,7 @@ public class Figure {
             }
             if (right.getPosY() == left.getPosY()) {
                 count++;
-                if (count >= maxX) {
+                if (count > maxX) {
                     leftIter.remove();
                     for (int i = 0; i < maxX - 1; i++) {
                         if (leftIter.hasNext()) {
