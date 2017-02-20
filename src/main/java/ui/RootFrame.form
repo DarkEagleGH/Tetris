@@ -2,10 +2,10 @@
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="ui.RootFrame">
   <grid id="27dc6" binding="mainPan" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="0">
     <constraints>
-      <xy x="6" y="8" width="597" height="599"/>
+      <xy x="6" y="8" width="551" height="599"/>
     </constraints>
     <properties>
-      <preferredSize width="510" height="590"/>
+      <preferredSize width="440" height="590"/>
     </properties>
     <border type="none"/>
     <children>
@@ -29,7 +29,7 @@
       <component id="1ffac" class="ui.DrawPan" binding="drawPan">
         <constraints/>
         <properties>
-          <preferredSize width="385" height="590"/>
+          <preferredSize width="315" height="590"/>
         </properties>
         <clientProperties>
           <html.disable class="java.lang.Boolean" value="false"/>

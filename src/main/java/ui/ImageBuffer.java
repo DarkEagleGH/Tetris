@@ -5,23 +5,22 @@ import core.Figure;
 import core.Tetris;
 
 import java.awt.*;
+import java.awt.font.FontRenderContext;
+import java.awt.font.TextLayout;
 import java.awt.image.BufferedImage;
 
 /**
- * Created by Tonk on 17.02.2017.
+ * Created by Tonk on 17.02.2017. **
  */
 
 class ImageBuffer extends BufferedImage {
     private Graphics2D g2d;
     private int scale;
-    private int countX;
-    private int countY;
-    private int head;
     private int baseX;
     private int baseY;
-    private Color baseColor;
+    private Color baseColor;        // Panel color for erasing
 
-    public void setBaseColor(Color baseColor) {
+    void setBaseColor(Color baseColor) {
         this.baseColor = baseColor;
     }
 
@@ -35,12 +34,13 @@ class ImageBuffer extends BufferedImage {
     void clearCup(int GAP, int CAP_STROKE_WIDTH) {
         int w = getWidth();
         int h = getHeight();
-        countX = Integer.parseInt(Tetris.getSettings().getProperty("cup.size.x"));
-        countY = Integer.parseInt(Tetris.getSettings().getProperty("cup.size.y"));
-        head = Integer.parseInt(Tetris.getSettings().getProperty("cup.head"));
-
+        int countX = Integer.parseInt(Tetris.getSettings().getProperty("cup.size.x"));
+        int countY = Integer.parseInt(Tetris.getSettings().getProperty("cup.size.y"));
+        int head = Integer.parseInt(Tetris.getSettings().getProperty("cup.head"));
         baseX = GAP + CAP_STROKE_WIDTH;
         baseY = h - GAP - CAP_STROKE_WIDTH;
+
+        // Calculate brick size in px
         int tmpScaleX = (w - GAP - CAP_STROKE_WIDTH * 2) / countX;
         int tmpScaleY = (h - GAP - CAP_STROKE_WIDTH * 2) / (countY + head);
         if (tmpScaleX <= tmpScaleY) {
@@ -48,26 +48,19 @@ class ImageBuffer extends BufferedImage {
         } else {
             scale = tmpScaleY;
         }
-        g2d = this.createGraphics();
+
+        // Clear field
+        g2d.setColor(baseColor);
+        g2d.fillRect(0, 0, w, h);
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
+        // Cup borders. Left, bottom,right
         g2d.setColor(Color.gray);
         g2d.setStroke(new BasicStroke(CAP_STROKE_WIDTH, BasicStroke.CAP_SQUARE, BasicStroke.CAP_SQUARE));
         g2d.drawLine(GAP, h - GAP, GAP, GAP + head * scale);
         g2d.drawLine(GAP, h - GAP, GAP + CAP_STROKE_WIDTH + scale * countX, h - GAP);
-        g2d.drawLine(GAP + CAP_STROKE_WIDTH * 2 + scale * countX, h - GAP, GAP + CAP_STROKE_WIDTH * 2 + scale * countX,
-                GAP + head * scale);
-
-/*        g2d.setColor(Color.lightGray);
-        for (int j = 1; j < countY + 1; j++) {
-            for (int i = 0; i < countX; i++) {
-                g2d.fill3DRect(GAP + CAP_STROKE_WIDTH + i * scale, h - GAP - CAP_STROKE_WIDTH - scale * j, scale, scale, true);
-            }
-        }*/
-
-        g2d.setColor(Color.cyan);
-        g2d.setStroke(new BasicStroke(2));
-//        g2d.drawLine(baseX, baseY - scale * head, baseX + scale * countX, baseY - scale * head);
+        g2d.drawLine(GAP + CAP_STROKE_WIDTH * 2 + scale * countX - 1,
+                h - GAP, GAP + CAP_STROKE_WIDTH * 2 + scale * countX - 1, GAP + head * scale);
     }
 
     void eraseFigure(Figure figure) {
@@ -81,8 +74,18 @@ class ImageBuffer extends BufferedImage {
     private void draw(Figure figure, Color color) {
         for (Brick brick : figure.getBricks()) {
             g2d.setColor(color);
-//            g2d.fillRoundRect(baseX + brick.getPosX()*scale, baseY - brick.getPosY() * scale, scale-1, scale-1, 10, 10);
-            g2d.fillRect(baseX + (brick.getPosX()-1) * scale, baseY - (brick.getPosY()) * scale, scale - 1, scale - 1);
+            g2d.fillRect(baseX + (brick.getPosX() - 1) * scale, baseY - (brick.getPosY()) * scale, scale - 1, scale - 1);
         }
+    }
+
+    void gameOver() {
+        g2d.setColor(Color.red);
+        FontRenderContext context = g2d.getFontRenderContext();
+        Font font = new Font("Arial", Font.BOLD, 48);
+        TextLayout text = new TextLayout("Game Over", font, context);
+        g2d.setFont(font);
+        int x = (getWidth() / 2 - (int) (text.getBounds().getWidth() / 2));
+        int y = (getHeight() / 2);
+        g2d.drawString("Game Over", x, y);
     }
 }

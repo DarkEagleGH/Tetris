@@ -7,21 +7,15 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 /**
- * Created by Tonk on 16.02.2017.
+ * Created by Tonk on 16.02.2017. **
  */
 public class DrawPan extends JPanel {
     private ImageBuffer imageBuffer;
-    final static int GAP = 10;
-    final static int CAP_STROKE_WIDTH = 5;
-    static int scale;
-
-    public ImageBuffer getImageBuffer() {
-        return imageBuffer;
-    }
+    private final static int GAP = 10;
+    private final static int CAP_STROKE_WIDTH = 5;
 
     DrawPan() {
         setOpaque(true);
-//        reset();
     }
 
     @Override
@@ -29,7 +23,6 @@ public class DrawPan extends JPanel {
         if (imageBuffer == null) {
             rebuildBuffer();
         }
-//            imageBuffer.clearCap(GAP, CAP_STROKE_WIDTH);
         g.drawImage(imageBuffer, 0, 0, this);
     }
 
@@ -44,6 +37,7 @@ public class DrawPan extends JPanel {
         imageBuffer.drawFigure(figure);
         paintComponent(this.getGraphics());
     }
+
     public void eraseFigure(Figure figure) {
         imageBuffer.eraseFigure(figure);
         paintComponent(this.getGraphics());
@@ -51,6 +45,12 @@ public class DrawPan extends JPanel {
 
     public void reset() {
         imageBuffer.clearCup(GAP, CAP_STROKE_WIDTH);
+        paintComponent(this.getGraphics());
+
+    }
+
+    public void gameOver() {
+        imageBuffer.gameOver();
         paintComponent(this.getGraphics());
     }
 }
