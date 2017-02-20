@@ -9,7 +9,7 @@ import static java.awt.event.KeyEvent.VK_LEFT;
 import static java.awt.event.KeyEvent.VK_RIGHT;
 
 /**
- * Created by Tonk on 19.02.2017.
+ * Created by Tonk on 19.02.2017. **
  */
 class KeyDispatcher implements KeyEventDispatcher {
     public boolean dispatchKeyEvent(KeyEvent event) {
@@ -24,16 +24,16 @@ class KeyDispatcher implements KeyEventDispatcher {
         return true;
     }
 
-    class Nigga extends SwingWorker {
+    private class Nigga extends SwingWorker {
         private KeyEvent event;
 
-        Nigga(KeyEvent event){
+        Nigga(KeyEvent event) {
             this.event = event;
         }
 
         @Override
         protected Object doInBackground() throws Exception {
-            System.out.println("Nigga " + Thread.currentThread().getName() + " " + Thread.currentThread().getId());
+//            System.out.println("Nigga " + Thread.currentThread().getName() + " " + Thread.currentThread().getId());
             switch (event.getKeyCode()) {
                 case VK_LEFT: {
                     Tetris.getGame().move(Game.Direction.LEFT);
@@ -48,7 +48,6 @@ class KeyDispatcher implements KeyEventDispatcher {
                 }
                 break;
             }
-            System.out.println("typed " + event.getKeyCode());
             return null;
         }
     }

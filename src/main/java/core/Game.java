@@ -1,59 +1,37 @@
 package core;
 
 import javax.swing.*;
-import java.lang.reflect.InvocationTargetException;
+
+import static java.lang.Thread.sleep;
 
 /**
- * Created by Tonk on 16.02.2017.
+ * Created by Tonk on 16.02.2017. **
  */
 public class Game {
     private Figure oldPosition;
     private Figure newPosition;
     private Figure pile;
-    private int countX;
-    private int countY;
-    private int top;
-    private boolean runFl;
+    private Nigga nigga;
+    private boolean running;
 
-    public enum Direction {LEFT, RIGHT, DOWN}
+    enum Direction {LEFT, RIGHT, DOWN}
 
-    public Game() {
-        System.out.println("Game " + Thread.currentThread().getName() + " " + Thread.currentThread().getId());
-        System.out.println("Game construct---");
-        this.countX = Integer.parseInt(Tetris.getSettings().getProperty("cup.size.x"));
-        this.countY = Integer.parseInt(Tetris.getSettings().getProperty("cup.size.y"));
-        this.top = Integer.parseInt(Tetris.getSettings().getProperty("cup.head"));
+    Game() {
         oldPosition = new Figure();
         newPosition = new Figure();
         pile = new Figure();
-        runFl = true;
+
         oldPosition.generateNew();
-
-        process();
-
+        running = true;
+        nigga = new Nigga();
+        nigga.execute();
     }
 
-    private void process() {
-        try {
-            SwingUtilities.invokeAndWait(new Runnable() {
-                public void run() {
-                    Tetris.getRootFrame().getDrawPanel().drawFigure(oldPosition);
-                }
-            });
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
+    synchronized void move(Direction direction) {
+        if (!running) {
+            return;
         }
-
-
-
-
-
-    }
-
-    public synchronized void move(Direction direction) {
-        System.out.println("move " + Thread.currentThread().getName() + " " + Thread.currentThread().getId());
+        boolean pileChanged = false;
         newPosition.copyFrom(oldPosition);
         switch (direction) {
             case LEFT:
@@ -69,19 +47,60 @@ public class Game {
             case DOWN:
                 if (!newPosition.moveDown() || newPosition.isIntersect(pile)) {
                     pile.addBricks(oldPosition);
+                    pileChanged = pile.checkAndBurn(oldPosition);
+                    if (pile.getBricks().get(pile.getBricks().size()-1).getPosY() > pile.getMaxY()) {
+                        gameOver();
+                        return;
+                    }
                     newPosition.generateNew();
                 }
                 break;
         }
 
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
+        boolean finalPileChanged = pileChanged;
+        SwingUtilities.invokeLater(() -> {
+            if (finalPileChanged) {
+                Tetris.getRootFrame().getDrawPanel().reset();
+            } else {
                 Tetris.getRootFrame().getDrawPanel().eraseFigure(oldPosition);
-                Tetris.getRootFrame().getDrawPanel().drawFigure(newPosition);
-                Tetris.getRootFrame().getDrawPanel().drawFigure(pile);
-                oldPosition.copyFrom(newPosition);
             }
+            Tetris.getRootFrame().getDrawPanel().drawFigure(newPosition);
+            Tetris.getRootFrame().getDrawPanel().drawFigure(pile);
+            oldPosition.copyFrom(newPosition);
         });
 
+    }
+
+    public void reset() {
+        nigga.cancel(true);
+        nigga = new Nigga();
+        running = true;
+        nigga.execute();
+    }
+
+    private void gameOver() {
+        nigga.cancel(true);
+        running = false;
+        Tetris.getRootFrame().getDrawPanel().gameOver();
+    }
+
+    private class Nigga extends SwingWorker {
+        @Override
+        protected Object doInBackground() throws Exception {
+            pile.getBricks().clear();
+            oldPosition.generateNew();
+            newPosition.getBricks().clear();
+
+            SwingUtilities.invokeLater(() -> {
+                Tetris.getRootFrame().getDrawPanel().reset();
+                Tetris.getRootFrame().getDrawPanel().drawFigure(oldPosition);
+            });
+            sleep(1000);
+            while (!isCancelled()) {
+                move(Direction.DOWN);
+                sleep(500);
+            }
+            return null;
+        }
     }
 }
