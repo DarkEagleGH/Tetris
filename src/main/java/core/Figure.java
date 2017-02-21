@@ -37,42 +37,55 @@ public class Figure {
             bricks.clear();
         }
         switch (random.nextInt(7)) {
+            // ****
             case 0:
                 bricks.add(new Brick(4, maxY - 1 + head));
                 bricks.add(new Brick(5, maxY - 1 + head));
                 bricks.add(new Brick(6, maxY - 1 + head));
                 bricks.add(new Brick(7, maxY - 1 + head));
                 break;
+            // *
+            // ***
             case 1:
                 bricks.add(new Brick(4, maxY + head));
                 bricks.add(new Brick(4, maxY - 1 + head));
                 bricks.add(new Brick(5, maxY - 1 + head));
                 bricks.add(new Brick(6, maxY - 1 + head));
                 break;
+            //   *
+            // ***
             case 2:
                 bricks.add(new Brick(6, maxY + head));
                 bricks.add(new Brick(4, maxY - 1 + head));
                 bricks.add(new Brick(5, maxY - 1 + head));
                 bricks.add(new Brick(6, maxY - 1 + head));
                 break;
+            // **
+            // **
             case 3:
                 bricks.add(new Brick(4, maxY + head));
                 bricks.add(new Brick(5, maxY + head));
                 bricks.add(new Brick(4, maxY - 1 + head));
                 bricks.add(new Brick(5, maxY - 1 + head));
                 break;
+            //  **
+            // **
             case 4:
                 bricks.add(new Brick(5, maxY + head));
                 bricks.add(new Brick(6, maxY + head));
                 bricks.add(new Brick(4, maxY - 1 + head));
                 bricks.add(new Brick(5, maxY - 1 + head));
                 break;
+            //  *
+            // ***
             case 5:
                 bricks.add(new Brick(5, maxY + head));
                 bricks.add(new Brick(4, maxY - 1 + head));
                 bricks.add(new Brick(5, maxY - 1 + head));
                 bricks.add(new Brick(6, maxY - 1 + head));
                 break;
+            // **
+            //  **
             case 6:
                 bricks.add(new Brick(4, maxY + head));
                 bricks.add(new Brick(5, maxY + head));
@@ -118,8 +131,36 @@ public class Figure {
         return true;
     }
 
-    public void rotate() {
-        //Later
+    boolean rotate() {
+        boolean[][] matrix;
+        bricks.sort(new CompareByX());
+        int x = bricks.get(bricks.size() - 1).getPosX() - bricks.get(0).getPosX() + 1;
+        int shiftX = bricks.get(0).getPosX();
+        bricks.sort(new CompareByY());
+        int y = bricks.get(bricks.size() - 1).getPosY() - bricks.get(0).getPosY() + 1;
+        int shiftY = bricks.get(0).getPosY();
+        matrix = new boolean[x][y];
+
+        for (Brick brick : bricks) {
+            matrix[brick.getPosX() - shiftX][brick.getPosY() - shiftY] = true;
+        }
+
+        matrix = rotateMatrix(matrix);
+
+        bricks.clear();
+        for (x = 0; x < matrix.length; x++) {
+            for (y = 0; y < matrix[0].length; y++) {
+                if (matrix[x][y]) {
+                    bricks.add(new Brick(x + shiftX, y + shiftY));
+                }
+            }
+        }
+        for (Brick brick : bricks) {
+            if (brick.getPosX() < 0 || brick.getPosX() > maxX || brick.getPosY() < 0) {
+                return false;
+            }
+        }
+        return true;
     }
 
     boolean isIntersect(Figure pile) {
@@ -186,8 +227,10 @@ public class Figure {
                 continue;
             }
             if (right.getPosY() > left.getPosY()) {
-                count = 1;
-                left = leftIter.next();
+                while (count > 1) {
+                    left = leftIter.next();
+                    count--;
+                }
             }
             if (right.getPosY() == left.getPosY()) {
                 count++;
@@ -207,5 +250,28 @@ public class Figure {
             }
         }
         return pileChanged;
+    }
+
+    private static boolean[][] rotateMatrix(boolean[][] matrix) {
+        int rowLength = matrix[0].length;
+
+        boolean[][] tMatrix = new boolean[rowLength][];
+        for (int i = 0; i < rowLength; i++) {
+            tMatrix[i] = new boolean[matrix.length];
+        }
+        for (int i = 0; i < matrix.length; i++) {
+            boolean[] tArr = matrix[i];
+            for (int j = 0; j < rowLength; j++) {
+                tMatrix[j][i] = tArr[j];
+            }
+        }
+        for (int i = 0; i < tMatrix.length; i++) {
+            boolean[] tArr = tMatrix[i];
+            boolean tmp = tArr[0];
+            tArr[0] = tArr[tArr.length - 1];
+            tArr[tArr.length - 1] = tmp;
+            tMatrix[i] = tArr;
+        }
+        return tMatrix;
     }
 }

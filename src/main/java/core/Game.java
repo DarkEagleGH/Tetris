@@ -14,7 +14,7 @@ public class Game {
     private Nigga nigga;
     private boolean running;
 
-    enum Direction {LEFT, RIGHT, DOWN}
+    enum Direction {LEFT, RIGHT, DOWN, ROTATE}
 
     Game() {
         oldPosition = new Figure();
@@ -48,11 +48,16 @@ public class Game {
                 if (!newPosition.moveDown() || newPosition.isIntersect(pile)) {
                     pile.addBricks(oldPosition);
                     pileChanged = pile.checkAndBurn(oldPosition);
-                    if (pile.getBricks().get(pile.getBricks().size()-1).getPosY() > pile.getMaxY()) {
+                    if (pile.getBricks().get(pile.getBricks().size() - 1).getPosY() > pile.getMaxY()) {
                         gameOver();
                         return;
                     }
                     newPosition.generateNew();
+                }
+                break;
+            case ROTATE:
+                if (!newPosition.rotate() || newPosition.isIntersect(pile)) {
+                    return;
                 }
                 break;
         }
@@ -68,7 +73,6 @@ public class Game {
             Tetris.getRootFrame().getDrawPanel().drawFigure(pile);
             oldPosition.copyFrom(newPosition);
         });
-
     }
 
     public void reset() {

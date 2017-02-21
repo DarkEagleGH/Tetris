@@ -46,7 +46,6 @@ public class Tetris {
 
     public static void main(String[] args) throws InterruptedException {
         setSettings();
-
         try {
             SwingUtilities.invokeAndWait(() -> Tetris.rootFrame = new RootFrame());
         } catch (InterruptedException | InvocationTargetException e) {
